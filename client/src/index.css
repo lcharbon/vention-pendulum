@@ -1,0 +1,53 @@
+body {
+    display: table;
+    width: 100%;
+}
+
+.cradle-container {
+    padding: 200px 20px 0 20px;
+    display: table-cell;
+    text-align: center;
+}
+
+.general-controls {
+    background-color: green;
+    height: 180px;
+    width: 20%;
+    display: table-cell;
+}
+
+.cradle {
+    display: inline-table;
+    height: 500px;
+    width: 1000px;
+    border: 4px solid;
+}
+
+.pendulum-container {
+    position: relative;
+    display: table-cell;
+}
+
+.pendulum-controls {
+    position: relative;
+    top: -200px;
+}
+
+.pendulum {
+
+}
+
+.rod {
+    width: 10px;
+    height: 350px;
+    background-color: red;
+    margin: 0 auto;
+}
+
+.bob {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: blue;
+    margin: 0 auto;
+}
