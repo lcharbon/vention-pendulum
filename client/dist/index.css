@@ -33,8 +33,30 @@ body {
     top: -200px;
 }
 
-.pendulum {
+.guide {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 844px;
+    height: 422px; /* as the half of the width */
+    box-sizing: border-box;
+    border-bottom-left-radius: 422px;  /* 100px of height + 10px of border */
+    border-bottom-right-radius: 422px; /* 100px of height + 10px of border */
+    border: 72px solid #000;
+    opacity: 0;
+    border-top: 0;
+    z-index: 1;
+    transition: opacity 0.3s;
 
+}
+
+.pendulum {
+    position: absolute;
+    left: 50%;
+    z-index: 2;
+    transform-origin: center top;
+    margin-left: -5px;
+    transform: rotate(0deg);
 }
 
 .rod {
@@ -45,9 +67,15 @@ body {
 }
 
 .bob {
+    position: absolute;
     width: 72px;
     height: 72px;
     border-radius: 50%;
     background-color: blue;
     margin: 0 auto;
+    cursor: grab;
+    user-select: none;
+    z-index: 3;
+    left: 50%;
+    transform: translateX(-50%);
 }
