@@ -1,12 +1,29 @@
+import InputControl from "../client/src/components/InputControl";
+import textStrings from "../textStrings.json";
+
 class Pendulum {
     static cradleDOM;
 
+    angle = 0;
     dragging = false;
     pivotX = 0;
     pivotY = 0;
     
-    constructor(data) {
-        this.id = data.pendulumId;
+    constructor(opt={}) {
+        this.id = opt.pendulumId;
+    }
+
+    setAngle(angle=Math.PI/2) {
+        let rodAngle = Math.PI/2 -angle;
+        
+        this.angle = angle;
+        this.angleControl.setValue(+this.angle.toFixed(4));
+
+        this.pendulumDOM.style.transform = `rotate(${rodAngle}rad)`;
+    }
+
+    setLength() {
+        console.log("length change");
     }
 
     #bobDragHandler() {
@@ -14,16 +31,20 @@ class Pendulum {
         this.giudeDOM.style.opacity = 0.3;
 
         function onMouseMove(event) {
+            let rodAngle = 0;
             let opppsite = this.pivotX - event.pageX;
             let adjacent = event.pageY - this.pivotY;
 
-            console.log(`x: ${this.pivotX}, ${this.pivotY}`);
 
             // Avoids divide by 0 and bob being above the guide.
-            if (adjacent <= 0) return; 
+            if (adjacent <= 0) {
+                if (opppsite > 0) rodAngle = Math.PI/2;
+                else rodAngle = -Math.PI/2;
+            } else {
+                rodAngle = Math.atan(opppsite/adjacent);
+            }
 
-            this.angle = Math.atan(opppsite/adjacent);
-            this.pendulumDOM.style.transform = `rotate(${this.angle}rad)`;
+            this.setAngle(Math.PI/2 - rodAngle);
         };
         onMouseMove = onMouseMove.bind(this);
 
@@ -40,8 +61,20 @@ class Pendulum {
     }
 
     #renderControls() {
+        this.angleControl = new InputControl({ 
+            label: textStrings["1"],
+            onChange: this.setAngle.bind(this)
+        });
+        this.lengthControl = new InputControl({
+            label: textStrings["2"],
+            onChange: this.setLength.bind(this)
+        });;
+        
         this.pendulumControlsDOM = document.createElement("div");
         this.pendulumControlsDOM.classList.add("pendulum-controls");
+        
+        this.pendulumControlsDOM.appendChild(this.angleControl.render());
+        this.pendulumControlsDOM.appendChild(this.lengthControl.render());
         
         return this.pendulumControlsDOM;
     }
@@ -70,23 +103,22 @@ class Pendulum {
     }
     
     render() {
-        this.pendulumContainerDOM = document.createElement("div");
-        this.pendulumContainerDOM.classList.add("pendulum-container");
-        this.pendulumContainerDOM.setAttribute("id", this.id);
+        this.mainDOM = document.createElement("div");
+        this.mainDOM.classList.add("pendulum-main");
+        this.mainDOM.setAttribute("id", this.id);
 
         this.giudeDOM = document.createElement("div");
         this.giudeDOM.classList.add("guide");
  
-        this.pendulumContainerDOM.appendChild(this.giudeDOM);
-        this.pendulumContainerDOM.appendChild(this.#renderControls());
-        this.pendulumContainerDOM.appendChild(this.#renderPendulum());
+        this.mainDOM.appendChild(this.giudeDOM);
+        this.mainDOM.appendChild(this.#renderControls());
+        this.mainDOM.appendChild(this.#renderPendulum());
         
-        
-        this.constructor.cradleDOM.appendChild(this.pendulumContainerDOM);
+        this.setAngle(Math.PI/2);
+        this.constructor.cradleDOM.appendChild(this.mainDOM);
+
+        return this.mainDOM;
     }
 }
-
-
-
 
 export default Pendulum
