@@ -15,6 +15,11 @@ class Pendulum {
 
     setAngle(angle=Math.PI/2) {
         let rodAngle = Math.PI/2 -angle;
+
+        if (angle > Math.PI) {
+            alert(textStrings[9]);
+            return;
+        }
         
         this.angle = angle;
         this.angleControl.setValue(+this.angle.toFixed(4));
@@ -22,8 +27,22 @@ class Pendulum {
         this.pendulumDOM.style.transform = `rotate(${rodAngle}rad)`;
     }
 
-    setLength() {
-        console.log("length change");
+    setLength(length=350) {
+        let bobHeight = 72;
+        
+        if (length > 400) {
+            alert(textStrings["8"]);
+            return;
+        }
+
+        this.lengthControl.setValue(length);
+        this.pendulumDOM.style.height = length+"px";
+        this.giudeDOM.style.height = length + bobHeight/2 + "px";
+        this.giudeDOM.style.width = 2 * (length + bobHeight/2) + "px";
+    }
+
+    setMass(mass=20) {
+        this.massControl.setValue(mass);
     }
 
     #bobDragHandler() {
@@ -65,8 +84,14 @@ class Pendulum {
             label: textStrings["1"],
             onChange: this.setAngle.bind(this)
         });
+        
         this.lengthControl = new InputControl({
             label: textStrings["2"],
+            onChange: this.setLength.bind(this)
+        });;
+
+        this.massControl = new InputControl({
+            label: textStrings["3"],
             onChange: this.setLength.bind(this)
         });;
         
@@ -75,6 +100,7 @@ class Pendulum {
         
         this.pendulumControlsDOM.appendChild(this.angleControl.render());
         this.pendulumControlsDOM.appendChild(this.lengthControl.render());
+        this.pendulumControlsDOM.appendChild(this.massControl.render());
         
         return this.pendulumControlsDOM;
     }
@@ -114,7 +140,9 @@ class Pendulum {
         this.mainDOM.appendChild(this.#renderControls());
         this.mainDOM.appendChild(this.#renderPendulum());
         
-        this.setAngle(Math.PI/2);
+        this.setAngle();
+        this.setLength();
+        this.setMass();
         this.constructor.cradleDOM.appendChild(this.mainDOM);
 
         return this.mainDOM;

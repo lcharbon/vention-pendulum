@@ -9,14 +9,21 @@ body {
     text-align: center;
 }
 
-.general-controls {
-    background-color: green;
+#general-controls {
+    background-color: pink;
     height: 180px;
     width: 20%;
     display: table-cell;
+    vertical-align: top;
 }
 
-.cradle {
+.general-controls-inner {
+    width: 100%;
+    height: 100%;
+    padding-top: 22px;
+}
+
+#cradle {
     display: inline-table;
     height: 500px;
     width: 1000px;
@@ -46,8 +53,7 @@ body {
     opacity: 0;
     border-top: 0;
     z-index: 1;
-    transition: opacity 0.3s;
-
+    transition: opacity 0.2s;
 }
 
 .pendulum {
@@ -57,11 +63,14 @@ body {
     transform-origin: center top;
     margin-left: -5px;
     transform: rotate(0deg);
+    transition: height 1s;
 }
 
 .rod {
+    position: relative;
     width: 10px;
-    height: 350px;
+    height: 100%;
+    z-index: 2;
     background-color: red;
     margin: 0 auto;
 }
@@ -77,5 +86,37 @@ body {
     user-select: none;
     z-index: 3;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
 }
+
+.input-control-main {
+    padding-bottom: 6px;
+}
+
+.input-control-input {
+    display: block;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.input-control-label {
+    margin: 4px 0 4px 9%;
+    text-align: left;
+}
+
+.general-controls-buttons {
+    padding-top: 12px;
+}
+
+.primary-button-main {
+    padding: 7px 0;
+}
+
+.primary-button {
+    display: block;
+    width: 86px;
+    height: 28px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+

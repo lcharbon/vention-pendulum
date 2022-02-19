@@ -30,7 +30,7 @@ class InputControl {
         this.mainDOM.appendChild(this.labelDOM);
 
         this.inputDOM = document.createElement("input");
-        this.inputDOM.classList.add("input-control-label");
+        this.inputDOM.classList.add("input-control-input");
         this.inputDOM.setAttribute("type", "number");
         this.inputDOM.setAttribute("step", "0.01");
         this.inputDOM.onchange = this.onChangeHandler.bind(this);

@@ -1,4 +1,11 @@
 {
     "1": "Angle (rad)",
-    "2": "Rod Length (cm)"
+    "2": "Rod Length (cm)",
+    "3": "Mass (kg)",
+    "4": "Start",
+    "5": "Stop",
+    "6": "Reset",
+    "7": "maximum wind factor (m/s)",
+    "8": "Rod is too long.",
+    "9": "Invalid angle."
 }

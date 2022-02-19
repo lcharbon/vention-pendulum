@@ -1,11 +1,29 @@
 import settings from "../../settings/settings.json"
 import Pendulum from "../../models/Pendulum";
+import GeneralControls from "./views/GeneralControls";
 
 const pendulums = {};
+
+function start(opt) {
+    console.log("start");
+    console.log(opt);
+}
+
+function stop() {
+    console.log("stop");
+}
 
 function init() {
     // Need to wait for content load to set this.
     Pendulum.cradleDOM = globalThis.document?.getElementById("cradle");
+    GeneralControls.generalControlsDOM = globalThis.document?.getElementById("general-controls");
+
+    let generalControls = new GeneralControls({
+        onStart: start,
+        onStop: stop
+    });
+   
+    generalControls.render();
    
     // Creates the amount of pendulums defined in the settings.
     Array.from(Array(settings.pendulumCount)).forEach((undefined, i) => {
