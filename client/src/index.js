@@ -2,7 +2,7 @@ import settings from "../../settings/settings.json"
 import Pendulum from "../../models/Pendulum";
 import GeneralControls from "./views/GeneralControls";
 
-const pendulums = {};
+let pendulums = {};
 
 function start(opt) {
     console.log("start");

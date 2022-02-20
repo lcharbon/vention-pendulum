@@ -22,7 +22,7 @@ class GeneralControls {
     }
 
     stopHandler() {
-        this.onStop()
+        this.onStop();
     }
 
     setMaxWind(maxWind=5) {
