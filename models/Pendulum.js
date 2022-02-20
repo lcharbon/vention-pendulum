@@ -13,11 +13,11 @@ class Pendulum {
         this.id = opt.pendulumId;
     }
 
-    setAngle(angle=Math.PI/2) {
-        let rodAngle = Math.PI/2 -angle;
+    setAngle(angle=0) {
+        let rodAngle = -angle;
 
-        if (angle > Math.PI) {
-            alert(textStrings[9]);
+        if (angle > Math.PI/2 ||  angle < -Math.PI/2) {
+            alert(textStrings["9"]);
             return;
         }
         
@@ -63,7 +63,7 @@ class Pendulum {
                 rodAngle = Math.atan(opppsite/adjacent);
             }
 
-            this.setAngle(Math.PI/2 - rodAngle);
+            this.setAngle(-rodAngle);
         };
         onMouseMove = onMouseMove.bind(this);
 
