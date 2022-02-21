@@ -24,12 +24,13 @@ class Pendulum {
         this.cradle = opt.cradle;
 
         this.active = opt.active;
-        this.angle = opt.angle;
         this.initialAngle = opt.angle;
         this.pivotX = opt.pivotX;
         this.length = opt.length;
         this.mass = opt.mass;
         this.bobRadius = opt.bobRadius;
+
+        this.setAngle(opt.angle);
 
         this.listenForStop();
         this.refreshIntervalId = setInterval(this.refresh.bind(this), 1000/this.fps);
@@ -55,7 +56,8 @@ class Pendulum {
                 this.stop();
 
                 if (data.collision !== false) {
-                    this.angle = this.initialAngle;
+                    this.setAngle(this.initialAngle);
+                    this.calcBobCordinates();
 
                     setTimeout(() => {
                         this.start();
@@ -63,6 +65,11 @@ class Pendulum {
                 }
             });
         });
+    }
+
+    setAngle(angle) {
+        this.angle = angle;
+        this.calcBobCordinates();
     }
 
     calcBobCordinates() {
@@ -149,7 +156,7 @@ class Pendulum {
         this.detectCollision();
         this.sampleTime = Date.now();
 
-        this.angle = angle;
+        this.setAngle(angle);
     }
 
     start() {        
