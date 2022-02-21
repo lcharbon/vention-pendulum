@@ -3,92 +3,77 @@ import textStrings from "../textStrings.json";
 
 class Pendulum {
     static cradleDOM;
-
     angle = 1;
+    active = false;
+    controlsEnabled = true;
     dragging = false;
+    refreshIntervalId = 0;
+    sampleTime = 0;
+   
+    angle = 1;
     pivotX = 0;
     pivotY = 0;
-    fps = 5;
+    fps = 10;
     length = 0;
-    gravity = 9.81;
-    angularVelocity = 0 // Angle per unit time.
-    angularAcceleration = 0
     mass = 0;
-
-    dragCoefficient = 0.42; // Standard for hemisphere.
-
-    airDensity = 1.225; // Standard sea level.
-    windSpeed = 2.5;
+    bobRadius = 0;
+    refreshIntervalId = 0;
     
     constructor(opt={}) {
         this.id = opt.pendulumId;
     }
 
-    bobCordinates() {
-        let x = this.length/100 * Math.sin(this.angle) + pivotX;
-        let y = this.length/100 * Math.cos(this.angle);
+    async refresh() {
+        let requestParams = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        };
+    
+        let response = await fetch('http://localhost:8080/pendulum', requestParams);
+        let data = await response.json()
 
-        return {x, y};
+        if (data.sampleTime < this.sampleTime) return;
+
+        this.sampleTime = data.sampleTime;
+        this.setAngle(data.angle);
     }
 
-    calcAirVelocity() {
-        let startX = this.length/100 * Math.sin(this.angle);
-        let endX = this.length/100 * Math.sin(this.angle + this.angularVelocity);
+    async sendOptions() {
+        let requestParams = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                angle: this.angle,
+                pivotX: this.pivotX,
+                length: this.length,
+                mass: this.mass,
+                bobRadius: this.bobRadius
+            })
+        };
+    
+        let response = await fetch('http://localhost:8080/pendulum', requestParams);
+    }
 
-        let startY = this.length/100 * Math.cos(this.angle);
-        let endY = this.length/100 * Math.cos(this.angle + this.angularVelocity);
+    async start() {
+        this.disableControls();
         
-        let xWind = endX - startX + this.windSpeed;
-        let yWind = endY - startY;
+        await this.sendOptions();
 
-        let speed = Math.sqrt(Math.pow(xWind, 2) + Math.pow(yWind, 2));
-        let angle = Math.PI - Math.atan(xWind / yWind);
+        this.active = true;
 
-        return {speed, angle};
+        this.refreshIntervalId = setInterval(this.refresh.bind(this), 1000/this.fps);
     }
 
-    calcDragAngularAcceleration() {
-        let airVelocity = this.calcAirVelocity();
-        let bobProjectedArea = Math.PI * Math.pow(this.bobRadius/100, 2);
-        let dragForce =  this.dragCoefficient * ((this.airDensity * Math.pow(airVelocity.speed,2))/2) * bobProjectedArea;
-        let dragAcceleration = dragForce/this.mass;
-        let dragAccelerationAngle = -(Math.PI - airVelocity.angle);
-
-        return dragAcceleration * Math.cos(dragAccelerationAngle)
+    stop() {
+        clearInterval(this.refreshIntervalId);
+        this.enableControls();
+        this.active = false;
     }
 
-    calcPontentialAngularAcceleration() {
-        return -1 * (this.gravity/(this.length/100)) * Math.sin(this.angle);
-    }
-
-    refresh() {
-        let angle = 0;
-
-        this.angularAcceleration = this.calcPontentialAngularAcceleration() - this.calcDragAngularAcceleration(); 
-        this.angularVelocity += this.angularAcceleration/this.fps;
-
-        console.log("angularAcceleration: " + this.angularAcceleration);
-        this.calcDragAngularAcceleration();
-
-        angle = this.angle + this.angularVelocity/ this.fps;
-
-        // Correct for sampling errors in acceleration;
-        if (angle > Math.PI/2) angle =  Math.PI/2;
-        if (angle < -Math.PI/2) angle = -Math.PI/2;
-
-        this.setAngle(angle);
-    }
-
-    start() {
-        console.log("starting")
-        setInterval(this.refresh.bind(this), 1000/this.fps);
-    }
-
-    setAngle(angle=Math.PI/2) {
+    setAngle(angle=0) {
         let rodAngle = -angle;
 
         if (angle > Math.PI/2 ||  angle < -Math.PI/2) {
-            console.log(angle);
             alert(textStrings["9"]);
             return;
         }
@@ -133,6 +118,8 @@ class Pendulum {
     }
 
     #bobDragHandler() {
+        if (!this.controlsEnabled) return;
+        
         this.dragging = true;
         this.giudeDOM.style.opacity = 0.3;
 
@@ -140,7 +127,6 @@ class Pendulum {
             let rodAngle = 0;
             let opppsite = this.pivotX - event.pageX;
             let adjacent = event.pageY - this.pivotY;
-
 
             // Avoids divide by 0 and bob being above the guide.
             if (adjacent <= 0) {
@@ -203,6 +189,24 @@ class Pendulum {
 
         this.pivotX = elemRect.left + (elemRect.width /2) + (window.pageXOffset || document.documentElement.scrollLeft);
         this.pivotY = elemRect.top + (window.pageYOffset || document.documentElement.scrollTop);
+    }
+
+    disableControls() {
+        this.controlsEnabled = false;
+        
+        this.angleControl.disable();
+        this.lengthControl.disable();
+        this.massControl.disable();
+        this.bobRadiusControl.disable();
+    }
+
+    enableControls() {
+        this.controlsEnabled = true;
+        
+        this.angleControl.enable();
+        this.lengthControl.enable();
+        this.massControl.enable();
+        this.bobRadiusControl.enable();
     }
     
     #renderPendulum() {

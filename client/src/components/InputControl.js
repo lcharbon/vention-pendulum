@@ -15,9 +15,17 @@ class InputControl {
         this.inputDOM.value = this.value;
     }
 
-    onChangeHandler(event) {
+    #onChangeHandler(event) {
         let value = parseFloat(event.target.value)|| undefined;
         this.onChange(value);
+    }
+
+    enable() {
+       this.inputDOM.disabled = false; 
+    }
+
+    disable() {
+        this.inputDOM.disabled = true;
     }
     
     render() {
@@ -33,7 +41,7 @@ class InputControl {
         this.inputDOM.classList.add("input-control-input");
         this.inputDOM.setAttribute("type", "number");
         this.inputDOM.setAttribute("step", "0.01");
-        this.inputDOM.onchange = this.onChangeHandler.bind(this);
+        this.inputDOM.onchange = this.#onChangeHandler.bind(this);
         this.mainDOM.appendChild(this.inputDOM);
 
         this.setValue(this.value);

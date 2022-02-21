@@ -3,8 +3,18 @@ body {
     width: 100%;
 }
 
+.test {
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background-color: orange;
+    width: 507px;
+    height: 100px;
+}
+
 .cradle-container {
-    padding: 200px 20px 0 20px;
+    padding: 250px 20px 0 20px;
     display: table-cell;
     text-align: center;
 }
@@ -37,7 +47,7 @@ body {
 
 .pendulum-controls {
     position: absolute;
-    top: -200px;
+    top: -250px;
 }
 
 .guide {
@@ -77,8 +87,6 @@ body {
 
 .bob {
     position: absolute;
-    width: 72px;
-    height: 72px;
     border-radius: 50%;
     background-color: blue;
     margin: 0 auto;

@@ -3,25 +3,61 @@ import Pendulum from "../../models/Pendulum";
 import GeneralControls from "./views/GeneralControls";
 
 let pendulums = {};
+let active = false;
 
-function start(opt) {
-    console.log("start");
-    console.log(opt);
+async function start(opt) {
+    active = true;
+
+    let requestParams = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            active: true,
+            maxWind: generalControls.maxWind,
+            dragCoefficient: generalControls.dragCoefficient,
+            airDensity: generalControls.airDensity
+        })
+    };
+
+    let response = await fetch('http://localhost:8080/cradle', requestParams)
+    
+    // Object.values(pendulums).forEach((pendulum, i) => {
+    //     pendulum.start({
+    //         port: 8080 + i + 1
+    //     });
+    // });
+
+    Object.values(pendulums)[0].start({
+        port: 8080
+    });
 }
 
-function stop() {
-    console.log("stop");
+async function stop() {
+    active = false;
+
+    let requestParams = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            active: false,
+        })
+    };
+
+    let response = await fetch('http://localhost:8080/cradle', requestParams);
+
+    Object.values(pendulums).forEach((pendulum) => pendulum.stop());
 }
+
+let generalControls = new GeneralControls({
+    onStart: start,
+    onStop: stop
+});
+
 
 function init() {
     // Need to wait for content load to set this.
     Pendulum.cradleDOM = globalThis.document?.getElementById("cradle");
     GeneralControls.generalControlsDOM = globalThis.document?.getElementById("general-controls");
-
-    let generalControls = new GeneralControls({
-        onStart: start,
-        onStop: stop
-    });
    
     generalControls.render();
    
@@ -35,11 +71,7 @@ function init() {
     });
 
     // Compute pivot coordinates after all pendulums are rendered.
-    Object.values(pendulums).forEach((pendulum)=> pendulum.computePivotDOMCoordinates());
-
-    Object.values(pendulums)[0].start();
-
-    
+    Object.values(pendulums).forEach((pendulum)=> pendulum.computePivotDOMCoordinates());  
 }
 
 document.addEventListener("DOMContentLoaded", init);

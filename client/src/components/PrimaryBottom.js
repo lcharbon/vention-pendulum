@@ -7,8 +7,16 @@ class PrimaryButton {
         this.onClick = opt.onClick;
     }
 
-    clickHandler() {
+    #clickHandler() {
         this.onClick();
+    }
+
+    enable() {
+        this.buttonDOM.disabled = false; 
+    }
+
+    disable() {
+        this.buttonDOM.disabled = true;
     }
 
     render() {
@@ -18,7 +26,7 @@ class PrimaryButton {
         this.buttonDOM = document.createElement("button");
         this.buttonDOM.classList.add("primary-button");
         this.buttonDOM.textContent = this.label;
-        this.buttonDOM.onclick = this.clickHandler.bind(this);
+        this.buttonDOM.onclick = this.#clickHandler.bind(this);
         this.mainDOM.appendChild(this.buttonDOM);
 
 

@@ -5,9 +5,11 @@
     "4": "Start",
     "5": "Stop",
     "6": "Reset",
-    "7": "maximum wind factor (m/s)",
+    "7": "Maximum Wind Factor (m/s)",
     "8": "Rod is too long.",
     "9": "Invalid angle.",
     "10": "Bob Radius (cm)",
-    "11": "Out of range."
+    "11": "Out of range.",
+    "12": "Drag Coefficient",
+    "13": "Air Density (kg/m3)"
 }
