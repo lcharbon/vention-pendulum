@@ -31,7 +31,7 @@ class Pendulum {
             headers: { 'Content-Type': 'application/json' }
         };
     
-        let response = await fetch('http://localhost:8081/pendulum', requestParams);
+        let response = await fetch(`http://localhost:${this.port}/pendulum`, requestParams);
         let data = await response.json()
 
         if (data.sampleTime < this.sampleTime) return;

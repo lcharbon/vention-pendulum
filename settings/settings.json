@@ -1,3 +1,4 @@
 {
-    "pendulumCount": 5
+    "pendulumCount": 5,
+    "collisionThreshold": 20
 }

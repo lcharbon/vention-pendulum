@@ -20,7 +20,6 @@ app.put("/cradle", (req, res) => {
         cradle.stop();
         pendulum.stop();
     } else {
-        console.log(`cradle received on port ${PORT}`)
         cradle = new Cradle(req.body);
     }
 

@@ -1,3 +1,6 @@
+const axios = require("axios").default;
+const settings = require("../../settings/settings.json");
+
 class Pendulum {
     active = false;
     angle = 0;
@@ -25,9 +28,9 @@ class Pendulum {
         this.bobRadius = opt.bobRadius;
     }
 
-    bobCordinates() {
-        this.x = this.length/100 * Math.sin(this.angle) + this.pivotX;
-        this.y = this.length/100 * Math.cos(this.angle);
+    calcBobCordinates() {
+        this.x = this.length * Math.sin(this.angle) + this.pivotX;
+        this.y = this.length * Math.cos(this.angle);
 
         return {x:this.x, y:this.y};
     }
@@ -62,6 +65,33 @@ class Pendulum {
         return -1 * (this.gravity/(this.length/100)) * Math.sin(this.angle);
     }
 
+    detectCollision() {
+        let currentPort = parseInt(process.env.port);
+
+        let ports = [currentPort - 1, currentPort + 1]
+
+        function getDistance(x1, y1, x2, y2) {
+            let y = x2 - x1;
+            let x = y2 - y1;
+            
+            return Math.sqrt(x * x + y * y);
+        }
+
+        ports.forEach(async (port) => {
+            if (port == 8080 || port == (8081 + parseInt(settings.pendulumCount)) ) return;
+            
+            let response = await axios.get(`http://localhost:${port}/pendulum`);
+
+            let distance = getDistance(this.x, this.y, response.data.x, response.data.y);
+
+            console.log(distance);
+
+            if (distance - 2 * this.bobRadius < settings.collisionThreshold) {
+                console.log("collision");
+            }
+        });
+    }
+
     refresh() {
         let angle = 0;
 
@@ -76,7 +106,8 @@ class Pendulum {
         if (angle > Math.PI/2) angle =  Math.PI/2;
         if (angle < -Math.PI/2) angle = -Math.PI/2;
 
-        this.bobCordinates();
+        this.calcBobCordinates();
+        this.detectCollision();
         this.sampleTime = Date.now();
 
         this.angle = angle;
