@@ -1,4 +1,4 @@
 {
     "pendulumCount": 5,
-    "collisionThreshold": 20
+    "collisionThreshold": 10
 }

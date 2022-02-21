@@ -21,10 +21,6 @@ class Cradle {
         console.log("Wind speed is: " + this.windSpeed);
     }
 
-    stop() {
-        
-    }
-
     getData() {
         return {
             maxWind: this.maxWind,

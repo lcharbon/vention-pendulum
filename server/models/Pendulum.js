@@ -1,5 +1,7 @@
 const axios = require("axios").default;
+const ipc = require('node-ipc');
 const settings = require("../../settings/settings.json");
+const EventEmitter = require('events');
 
 class Pendulum {
     active = false;
@@ -16,16 +18,51 @@ class Pendulum {
     bobRadius = 0;
     refreshIntervalId = 0;
     sampleTime = 0;
+    initialAngle = 0;
 
     constructor(opt) {
         this.cradle = opt.cradle;
 
         this.active = opt.active;
         this.angle = opt.angle;
+        this.initialAngle = opt.angle;
         this.pivotX = opt.pivotX;
         this.length = opt.length;
         this.mass = opt.mass;
         this.bobRadius = opt.bobRadius;
+
+        this.listenForStop();
+        this.refreshIntervalId = setInterval(this.refresh.bind(this), 1000/this.fps);
+    }
+
+    listenForStop() {
+        ipc.config.id = 'pendulum' + process.env.port;  // CID = from args
+        ipc.config.retry = 1500;
+
+        ipc.connectTo('root', () => {
+            ipc.of.root.on('connect', () => {
+            });
+
+            ipc.of.root.on('disconnect', () => {
+            });
+
+            ipc.of.root.on('kill.connection', (data) => {
+                ipc.disconnect('root');
+            });
+
+            ipc.of.root.on('stop', (data) => {
+                console.log(`client ${process.env.port} received collision`);
+                this.stop();
+
+                if (data.collision !== false) {
+                    this.angle = this.initialAngle;
+
+                    setTimeout(() => {
+                        this.start();
+                    }, 5000)
+                }
+            });
+        });
     }
 
     calcBobCordinates() {
@@ -84,16 +121,16 @@ class Pendulum {
 
             let distance = getDistance(this.x, this.y, response.data.x, response.data.y);
 
-            console.log(distance);
-
             if (distance - 2 * this.bobRadius < settings.collisionThreshold) {
-                console.log("collision");
+                ipc.of.root.emit('stop', {});
             }
         });
     }
 
     refresh() {
         let angle = 0;
+
+        if (!this.active) return;
 
         this.angularAcceleration = this.calcPontentialAngularAcceleration() - this.calcDragAngularAcceleration(); 
         this.angularVelocity += this.angularAcceleration/this.fps;
@@ -113,14 +150,13 @@ class Pendulum {
         this.angle = angle;
     }
 
-    start() {
-        let timeFrame = 1000/this.fps;
-
-        this.refreshIntervalId = setInterval(this.refresh.bind(this), timeFrame);
+    start() {        
+        this.active = true;
     }
 
     stop() {
-        clearInterval(this.refreshIntervalId);
+        this.angularVelocity = 0;
+        this.active = false;
     }
 
     getData() {
