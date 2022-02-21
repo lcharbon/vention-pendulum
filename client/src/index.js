@@ -37,6 +37,8 @@ function init() {
     // Compute pivot coordinates after all pendulums are rendered.
     Object.values(pendulums).forEach((pendulum)=> pendulum.computePivotDOMCoordinates());
 
+    Object.values(pendulums)[0].start();
+
     
 }
 

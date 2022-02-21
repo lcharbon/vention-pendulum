@@ -4,19 +4,91 @@ import textStrings from "../textStrings.json";
 class Pendulum {
     static cradleDOM;
 
-    angle = 0;
+    angle = 1;
     dragging = false;
     pivotX = 0;
     pivotY = 0;
+    fps = 5;
+    length = 0;
+    gravity = 9.81;
+    angularVelocity = 0 // Angle per unit time.
+    angularAcceleration = 0
+    mass = 0;
+
+    dragCoefficient = 0.42; // Standard for hemisphere.
+
+    airDensity = 1.225; // Standard sea level.
+    windSpeed = 2.5;
     
     constructor(opt={}) {
         this.id = opt.pendulumId;
     }
 
-    setAngle(angle=0) {
+    bobCordinates() {
+        let x = this.length/100 * Math.sin(this.angle) + pivotX;
+        let y = this.length/100 * Math.cos(this.angle);
+
+        return {x, y};
+    }
+
+    calcAirVelocity() {
+        let startX = this.length/100 * Math.sin(this.angle);
+        let endX = this.length/100 * Math.sin(this.angle + this.angularVelocity);
+
+        let startY = this.length/100 * Math.cos(this.angle);
+        let endY = this.length/100 * Math.cos(this.angle + this.angularVelocity);
+        
+        let xWind = endX - startX + this.windSpeed;
+        let yWind = endY - startY;
+
+        let speed = Math.sqrt(Math.pow(xWind, 2) + Math.pow(yWind, 2));
+        let angle = Math.PI - Math.atan(xWind / yWind);
+
+        return {speed, angle};
+    }
+
+    calcDragAngularAcceleration() {
+        let airVelocity = this.calcAirVelocity();
+        let bobProjectedArea = Math.PI * Math.pow(this.bobRadius/100, 2);
+        let dragForce =  this.dragCoefficient * ((this.airDensity * Math.pow(airVelocity.speed,2))/2) * bobProjectedArea;
+        let dragAcceleration = dragForce/this.mass;
+        let dragAccelerationAngle = -(Math.PI - airVelocity.angle);
+
+        return dragAcceleration * Math.cos(dragAccelerationAngle)
+    }
+
+    calcPontentialAngularAcceleration() {
+        return -1 * (this.gravity/(this.length/100)) * Math.sin(this.angle);
+    }
+
+    refresh() {
+        let angle = 0;
+
+        this.angularAcceleration = this.calcPontentialAngularAcceleration() - this.calcDragAngularAcceleration(); 
+        this.angularVelocity += this.angularAcceleration/this.fps;
+
+        console.log("angularAcceleration: " + this.angularAcceleration);
+        this.calcDragAngularAcceleration();
+
+        angle = this.angle + this.angularVelocity/ this.fps;
+
+        // Correct for sampling errors in acceleration;
+        if (angle > Math.PI/2) angle =  Math.PI/2;
+        if (angle < -Math.PI/2) angle = -Math.PI/2;
+
+        this.setAngle(angle);
+    }
+
+    start() {
+        console.log("starting")
+        setInterval(this.refresh.bind(this), 1000/this.fps);
+    }
+
+    setAngle(angle=Math.PI/2) {
         let rodAngle = -angle;
 
         if (angle > Math.PI/2 ||  angle < -Math.PI/2) {
+            console.log(angle);
             alert(textStrings["9"]);
             return;
         }
@@ -35,6 +107,7 @@ class Pendulum {
             return;
         }
 
+        this.length = length;
         this.lengthControl.setValue(length);
         this.pendulumDOM.style.height = length+"px";
         this.giudeDOM.style.height = length + bobHeight/2 + "px";
@@ -42,7 +115,21 @@ class Pendulum {
     }
 
     setMass(mass=20) {
+        this.mass = mass;
         this.massControl.setValue(mass);
+    }
+
+    setBobRadius(radius=36) {
+        if (radius > 75 || radius <= 0) {
+            alert(textStrings["11"]);
+            return;
+        }
+
+        this.bobDOM.style.width = 2 * radius + "px";
+        this.bobDOM.style.height = 2 * radius + "px";
+
+        this.bobRadius = radius;
+        this.bobRadiusControl.setValue(radius);
     }
 
     #bobDragHandler() {
@@ -94,6 +181,11 @@ class Pendulum {
             label: textStrings["3"],
             onChange: this.setLength.bind(this)
         });;
+
+        this.bobRadiusControl = new InputControl({
+            label: textStrings["10"],
+            onChange: this.setBobRadius.bind(this)
+        });;
         
         this.pendulumControlsDOM = document.createElement("div");
         this.pendulumControlsDOM.classList.add("pendulum-controls");
@@ -101,6 +193,7 @@ class Pendulum {
         this.pendulumControlsDOM.appendChild(this.angleControl.render());
         this.pendulumControlsDOM.appendChild(this.lengthControl.render());
         this.pendulumControlsDOM.appendChild(this.massControl.render());
+        this.pendulumControlsDOM.appendChild(this.bobRadiusControl.render());
         
         return this.pendulumControlsDOM;
     }
@@ -143,6 +236,8 @@ class Pendulum {
         this.setAngle();
         this.setLength();
         this.setMass();
+        this.setBobRadius();
+
         this.constructor.cradleDOM.appendChild(this.mainDOM);
 
         return this.mainDOM;

@@ -7,5 +7,7 @@
     "6": "Reset",
     "7": "maximum wind factor (m/s)",
     "8": "Rod is too long.",
-    "9": "Invalid angle."
+    "9": "Invalid angle.",
+    "10": "Bob Radius (cm)",
+    "11": "Out of range."
 }
