@@ -26,11 +26,8 @@ class Pendulum {
     }
 
     bobCordinates() {
-        console.log(this.angle);
         this.x = this.length/100 * Math.sin(this.angle) + this.pivotX;
         this.y = this.length/100 * Math.cos(this.angle);
-
-        console.log({x:this.x, y:this.y});
 
         return {x:this.x, y:this.y};
     }

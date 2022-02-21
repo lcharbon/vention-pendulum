@@ -9,6 +9,7 @@ class Pendulum {
     dragging = false;
     refreshIntervalId = 0;
     sampleTime = 0;
+    port = 0;
    
     angle = 1;
     pivotX = 0;
@@ -21,6 +22,7 @@ class Pendulum {
     
     constructor(opt={}) {
         this.id = opt.pendulumId;
+        this.port = opt.port;
     }
 
     async refresh() {
@@ -29,7 +31,7 @@ class Pendulum {
             headers: { 'Content-Type': 'application/json' }
         };
     
-        let response = await fetch('http://localhost:8080/pendulum', requestParams);
+        let response = await fetch('http://localhost:8081/pendulum', requestParams);
         let data = await response.json()
 
         if (data.sampleTime < this.sampleTime) return;
@@ -51,7 +53,7 @@ class Pendulum {
             })
         };
     
-        let response = await fetch('http://localhost:8080/pendulum', requestParams);
+        let response = await fetch(`http://localhost:${this.port}/pendulum`, requestParams);
     }
 
     async start() {

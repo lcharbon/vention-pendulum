@@ -8,8 +8,11 @@ class Cradle {
         this.maxWind = opt.maxWind;
         this.dragCoefficient = opt.dragCoefficient;
         this.airDensity = opt.airDensity;
+        this.windSpeed = opt.windSpeed;
 
-        this.#generateRandomWind();
+        if (!this.windSpeed) {
+            this.#generateRandomWind();
+        }
     }
 
     #generateRandomWind() {

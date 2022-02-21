@@ -22,18 +22,10 @@ async function start(opt) {
     let response = await fetch('http://localhost:8080/cradle', requestParams)
     let data = await response.json()
 
-    
-    // Object.values(pendulums).forEach((pendulum, i) => {
-    //     pendulum.start({
-    //         port: 8080 + i + 1
-    //     });
-    // });
 
     generalControls.setWindSpeed(data.windSpeed);
 
-    Object.values(pendulums)[0].start({
-        port: 8080
-    });
+    Object.values(pendulums).forEach((pendulum) => pendulum.start());
 }
 
 async function stop() {
@@ -71,7 +63,11 @@ function init() {
     // Creates the amount of pendulums defined in the settings.
     Array.from(Array(settings.pendulumCount)).forEach((undefined, i) => {
         let pendulumId = `pendulum_${i + 1}`
-        let pendulum = new Pendulum({pendulumId});
+        let port = 8081 + i;
+        let pendulum = new Pendulum({
+            pendulumId,
+            port
+        });
 
         pendulums[pendulumId] = pendulum;
         pendulum.render();
