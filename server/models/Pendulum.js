@@ -23,8 +23,6 @@ class Pendulum {
     constructor(opt) {
         this.cradle = opt.cradle;
 
-        console.log(opt.length)
-
         this.active = opt.active;
         this.angle = opt.angle;
         this.initialAngle = opt.angle;
@@ -124,6 +122,8 @@ class Pendulum {
             let distance = getDistance(this.x, this.y, response.data.x, response.data.y);
 
             if (distance - 2 * this.bobRadius < settings.collisionThreshold) {
+                console.log(`x: ${this.x}, y: ${this.y}`);
+                console.log(`x: ${response.data.x}, y: ${response.data.y}`);
                 ipc.of.root.emit('stop', {});
             }
         });
