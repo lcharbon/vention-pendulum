@@ -1,5 +1,5 @@
-import InputControl from "../client/src/components/InputControl";
-import textStrings from "../textStrings.json";
+import InputControl from "./InputControl";
+import textStrings from "../../../textStrings.json";
 
 class Pendulum {
     static cradleDOM;

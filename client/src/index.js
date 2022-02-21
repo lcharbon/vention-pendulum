@@ -1,5 +1,5 @@
 import settings from "../../settings/settings.json"
-import Pendulum from "../../models/Pendulum";
+import Pendulum from "./components/Pendulum";
 import GeneralControls from "./views/GeneralControls";
 
 let pendulums = {};
