@@ -20,12 +20,16 @@ async function start(opt) {
     };
 
     let response = await fetch('http://localhost:8080/cradle', requestParams)
+    let data = await response.json()
+
     
     // Object.values(pendulums).forEach((pendulum, i) => {
     //     pendulum.start({
     //         port: 8080 + i + 1
     //     });
     // });
+
+    generalControls.setWindSpeed(data.windSpeed);
 
     Object.values(pendulums)[0].start({
         port: 8080
@@ -46,7 +50,10 @@ async function stop() {
     let response = await fetch('http://localhost:8080/cradle', requestParams);
 
     Object.values(pendulums).forEach((pendulum) => pendulum.stop());
+
+    generalControls.setWindSpeed(0);
 }
+
 
 let generalControls = new GeneralControls({
     onStart: start,

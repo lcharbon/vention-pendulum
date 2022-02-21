@@ -20,11 +20,13 @@ body {
 }
 
 #general-controls {
+    position: relative;
     background-color: pink;
     height: 180px;
     width: 20%;
     display: table-cell;
     vertical-align: top;
+    z-index: 4;
 }
 
 .general-controls-inner {

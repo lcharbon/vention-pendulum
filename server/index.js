@@ -45,6 +45,3 @@ app.get("/pendulum", (req, res) => {
         pendulum.getData()
     );
 })
-
-
-// let pendulum = new Pendulum

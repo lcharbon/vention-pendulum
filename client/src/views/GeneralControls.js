@@ -8,6 +8,7 @@ class GeneralControls {
     maxWind = 0;
     dragCoefficient = 0;
     airDensity = 0;
+    windSpeed = 0;
 
     onStart = () => {};
     onStop = () => {};
@@ -42,7 +43,7 @@ class GeneralControls {
 
     setMaxWind(maxWind=40) {
         this.maxWind = maxWind;
-        this.maxWindInput.setValue(maxWind)
+        this.maxWindInput.setValue(maxWind);
     }
 
     setDragCoefficient(dragCoefficient=0.42) { // Standard for hemisphere.
@@ -52,7 +53,12 @@ class GeneralControls {
 
     setAirDensity(airDensity=1.225) { // Standard sea level.
         this.airDensity = airDensity;
-        this.airDensityInput.setValue(airDensity)
+        this.airDensityInput.setValue(airDensity);
+    }
+
+    setWindSpeed(windSpeed=0) {
+        this.windSpeed = windSpeed;
+        this.windSpeedInput.setValue(windSpeed);
     }
     
     render() {
@@ -85,6 +91,10 @@ class GeneralControls {
             onChange: this.setAirDensity.bind(this)
         })
 
+        this.windSpeedInput = new InputControl({
+            label: textStrings["14"]
+        })
+
         // Buttons
         this.startButton = new PrimaryButton({
             label: textStrings["4"],
@@ -99,12 +109,15 @@ class GeneralControls {
         this.formDOM.appendChild(this.maxWindInput.render());
         this.formDOM.appendChild(this.dragCoefficientInput.render());
         this.formDOM.appendChild(this.airDensityInput.render());
+        this.formDOM.appendChild(this.windSpeedInput.render());
         this.buttonsDOM.appendChild(this.startButton.render());
         this.buttonsDOM.appendChild(this.stopButton.render());
 
         this.setMaxWind();
         this.setAirDensity();
         this.setDragCoefficient();
+        this.setWindSpeed();
+        this.windSpeedInput.disable();
 
         this.stopButton.disable();
 

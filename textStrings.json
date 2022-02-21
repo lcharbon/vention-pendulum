@@ -11,5 +11,6 @@
     "10": "Bob Radius (cm)",
     "11": "Out of range.",
     "12": "Drag Coefficient",
-    "13": "Air Density (kg/m3)"
+    "13": "Air Density (kg/m3)",
+    "14": "Wind Speed (m/s)"
 }
