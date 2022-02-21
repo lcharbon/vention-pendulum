@@ -21,7 +21,7 @@ body {
 
 #general-controls {
     position: relative;
-    background-color: pink;
+    background-color: rgb(215, 222, 231);
     height: 180px;
     width: 20%;
     display: table-cell;
@@ -39,7 +39,8 @@ body {
     display: inline-table;
     height: 500px;
     width: 1000px;
-    border: 4px solid;
+    border: 10px solid rgb(28, 52, 79);
+    box-sizing: ;
 }
 
 .pendulum-main {
@@ -81,16 +82,17 @@ body {
 .rod {
     position: relative;
     width: 10px;
-    height: 100%;
+    height: calc(100% + 10px);
     z-index: 2;
-    background-color: red;
+    background-color: rgb(28, 52, 79);;
     margin: 0 auto;
+
 }
 
 .bob {
     position: absolute;
     border-radius: 50%;
-    background-color: blue;
+    background-color: rgb(95, 202, 119);
     margin: 0 auto;
     cursor: grab;
     user-select: none;
@@ -105,13 +107,18 @@ body {
 
 .input-control-input {
     display: block;
+    color: rgb(28, 52, 79);
     width: 80%;
     margin: 0 auto;
+    height: 18px;
+    border: 1.5px solid rgb(28, 52, 79);
 }
 
 .input-control-label {
     margin: 4px 0 4px 9%;
     text-align: left;
+    font-size: 14px;
+    font-family: Larsseit, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .general-controls-buttons {

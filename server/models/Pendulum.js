@@ -23,6 +23,8 @@ class Pendulum {
     constructor(opt) {
         this.cradle = opt.cradle;
 
+        console.log(opt.length)
+
         this.active = opt.active;
         this.angle = opt.angle;
         this.initialAngle = opt.angle;

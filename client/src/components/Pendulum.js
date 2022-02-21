@@ -167,7 +167,7 @@ class Pendulum {
 
         this.massControl = new InputControl({
             label: textStrings["3"],
-            onChange: this.setLength.bind(this)
+            onChange: this.setMass.bind(this)
         });;
 
         this.bobRadiusControl = new InputControl({
