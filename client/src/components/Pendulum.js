@@ -12,6 +12,8 @@ class Pendulum {
     port = 0;
    
     angle = 1;
+    x = 0;
+    y = 0;
     pivotX = 0;
     pivotY = 0;
     fps = 10;
@@ -37,6 +39,7 @@ class Pendulum {
         if (data.sampleTime < this.sampleTime) return;
 
         this.sampleTime = data.sampleTime;
+        this.setCoordinates(data.x, data.y);
         this.setAngle(data.angle);
     }
 
@@ -86,6 +89,22 @@ class Pendulum {
         this.pendulumDOM.style.transform = `rotate(${rodAngle}rad)`;
     }
 
+    setCoordinates(x, y) {
+        if (x === undefined) {
+            x = this.length * Math.sin(this.angle) + this.pivotX;
+        }
+
+        if (y === undefined) {
+            y = this.length * Math.cos(this.angle);
+        }
+        
+        this.x = x;
+        this.y = y;
+
+        this.xCoordinatesDOM.innerText = "x: " + x.toFixed(2);
+        this.yCoordinatesDOM.innerText = "y: " + y.toFixed(2);
+    }
+
     setLength(length=350) {
         let bobHeight = 72;
         
@@ -97,8 +116,8 @@ class Pendulum {
         this.length = length;
         this.lengthControl.setValue(length);
         this.pendulumDOM.style.height = length+"px";
-        this.giudeDOM.style.height = length + bobHeight/2 + "px";
-        this.giudeDOM.style.width = 2 * (length + bobHeight/2) + "px";
+        this.giudeDOM.style.height = 10 + length + bobHeight/2 + "px";
+        this.giudeDOM.style.width = 2 * (10 + length + bobHeight/2) + "px";
     }
 
     setMass(mass=20) {
@@ -137,7 +156,7 @@ class Pendulum {
             } else {
                 rodAngle = Math.atan(opppsite/adjacent);
             }
-
+            this.setCoordinates();
             this.setAngle(-rodAngle);
         };
         onMouseMove = onMouseMove.bind(this);
@@ -191,6 +210,8 @@ class Pendulum {
 
         this.pivotX = elemRect.left + (elemRect.width /2) + (window.pageXOffset || document.documentElement.scrollLeft);
         this.pivotY = elemRect.top + (window.pageYOffset || document.documentElement.scrollTop);
+
+        this.setCoordinates(this.pivotX, this.pivotY + this.length);
     }
 
     disableControls() {
@@ -223,6 +244,18 @@ class Pendulum {
         this.bobDOM.classList.add("bob");
         this.bobDOM.onmousedown = this.#bobDragHandler.bind(this);
         this.pendulumDOM.appendChild(this.bobDOM);
+
+        this.coordinateContainerDOM = document.createElement("div");
+        this.coordinateContainerDOM.classList.add("coordinates-container");
+        this.bobDOM.appendChild(this.coordinateContainerDOM);
+
+        this.xCoordinatesDOM = document.createElement("div");
+        this.xCoordinatesDOM.classList.add("x-coordinates");
+        this.coordinateContainerDOM.appendChild(this.xCoordinatesDOM);
+
+        this.yCoordinatesDOM = document.createElement("div");
+        this.yCoordinatesDOM.classList.add("y-coordinates");
+        this.coordinateContainerDOM.appendChild(this.yCoordinatesDOM);
 
         return this.pendulumDOM;
     }

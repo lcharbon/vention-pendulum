@@ -23,6 +23,10 @@ First off I want to say this was a very in depth code challenge that tested a wi
 ### The Cradle Object
 The `Cradle` object can be updated through the main port (8080) by `put` requests. Each pendulum API exposes a cradle endpoint for internal use.
 
+ **active**:  *boolean*
+
+ Boolean used to stop and start the simulation.
+ 
  **maxWind**:  *float*
  
  The upper bound of the random windspeed in m/s. The randomly chosen windspeed can not exceed this value.
@@ -81,3 +85,4 @@ The radius of the pendulums bob measured in cm.
 - Lint the code.
 - Use module imports.
 - Fix intermittent issue with collision detection.
+- Make menu collapsable.

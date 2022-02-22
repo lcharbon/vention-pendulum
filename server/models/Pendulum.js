@@ -59,9 +59,11 @@ class Pendulum {
                     this.setAngle(this.initialAngle);
                     this.calcBobCordinates();
 
-                    setTimeout(() => {
+                    this.stoptimeout = setTimeout(() => {
                         this.start();
                     }, 5000)
+                } else {
+                    clearTimeout(this.stoptimeout);
                 }
             });
         });

@@ -23,6 +23,9 @@ app.put("/cradle", (req, res) => {
         cradle = new Cradle(req.body);
     }
 
+    console.log("New Cradle");
+    console.log(req.body)
+
     res.status(200).send(
         cradle.getData()
     );
@@ -37,6 +40,9 @@ app.put("/pendulum", (req, res) => {
         cradle,
         ...req.body
     });
+
+    console.log("New Pendulum");
+    console.log(req.body)
 
     pendulum.start();
 

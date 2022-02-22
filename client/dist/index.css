@@ -1,6 +1,7 @@
 body {
     display: table;
     width: 100%;
+    font-family: Larsseit, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .test {
@@ -57,8 +58,8 @@ body {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    width: 844px;
-    height: 422px; /* as the half of the width */
+    width: 864px;
+    height: 432px; /* as the half of the width */
     box-sizing: border-box;
     border-bottom-left-radius: 422px;  /* 100px of height + 10px of border */
     border-bottom-right-radius: 422px; /* 100px of height + 10px of border */
@@ -86,7 +87,6 @@ body {
     z-index: 2;
     background-color: rgb(28, 52, 79);;
     margin: 0 auto;
-
 }
 
 .bob {
@@ -96,8 +96,18 @@ body {
     margin: 0 auto;
     cursor: grab;
     user-select: none;
+    font-size: 7px;
+    color: white;
+    text-align: left;
     z-index: 3;
     left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.coordinates-container {
+    position: absolute;
+    left: 50%;
+    top: 45%;
     transform: translate(-50%, -50%);
 }
 
@@ -118,7 +128,6 @@ body {
     margin: 4px 0 4px 9%;
     text-align: left;
     font-size: 14px;
-    font-family: Larsseit, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .general-controls-buttons {
